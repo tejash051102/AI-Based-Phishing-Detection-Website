@@ -9,11 +9,13 @@ export default function ScannerPage() {
   const [content, setContent] = useState("");
   const [file, setFile] = useState(null);
   const [result, setResult] = useState(null);
+  const [batch, setBatch] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const scan = async () => {
     setLoading(true);
     setResult(null);
+    setBatch([]);
     try {
       const { data } = await api.post("/scans", { type, content });
       setResult(data.scan);
@@ -33,7 +35,8 @@ export default function ScannerPage() {
     try {
       const { data } = await api.post("/scans/upload", form);
       setResult(data.scan);
-      toast.success("File scanned");
+      setBatch(data.scans || []);
+      toast.success(`File scanned: ${data.extracted || 1} item(s) analyzed`);
     } catch (error) {
       toast.error(error.response?.data?.message || "Upload failed");
     } finally {
@@ -72,6 +75,19 @@ export default function ScannerPage() {
             Scan uploaded file
           </button>
         </div>
+        {batch.length > 1 && (
+          <div className="mt-5 rounded border border-slate-200 p-4 dark:border-slate-800">
+            <h3 className="font-semibold">Extracted scans</h3>
+            <div className="mt-3 space-y-2">
+              {batch.map((scan) => (
+                <div key={scan._id} className="flex items-center justify-between rounded bg-slate-50 p-2 text-sm dark:bg-slate-950">
+                  <span className="max-w-[70%] truncate">{scan.sourceLabel || scan.type}: {scan.input}</span>
+                  <span className="font-bold">{scan.threatScore}/100</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
       <aside className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
         <h2 className="text-lg font-bold">Real-time result</h2>
@@ -100,4 +116,3 @@ export default function ScannerPage() {
     </div>
   );
 }
-

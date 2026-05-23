@@ -1,7 +1,8 @@
-from app.model import train_default_model
+from pathlib import Path
+
+from app.training import train_from_dataset
 
 
 if __name__ == "__main__":
-    train_default_model()
-    print("Model trained and saved to app/models/phishing_url_model.joblib")
-
+    metrics = train_from_dataset(Path("data/sample_phishing_urls.csv"))
+    print(f"Model version {metrics['version']} trained with accuracy {metrics['accuracy']:.2f}")

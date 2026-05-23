@@ -1,4 +1,5 @@
 import ThreatBadge from "./ThreatBadge";
+import { Link } from "react-router-dom";
 
 export default function ScanTable({ scans = [] }) {
   return (
@@ -17,7 +18,12 @@ export default function ScanTable({ scans = [] }) {
           <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
             {scans.map((scan) => (
               <tr key={scan._id}>
-                <td className="max-w-md truncate px-4 py-3">{scan.input}</td>
+                <td className="max-w-md truncate px-4 py-3">
+                  <Link to={`/history/${scan._id}`} className="font-medium hover:text-cyber-500">
+                    {scan.input}
+                  </Link>
+                  {scan.sourceLabel && <p className="text-xs text-slate-500">{scan.sourceLabel}</p>}
+                </td>
                 <td className="px-4 py-3 uppercase">{scan.type}</td>
                 <td className="px-4 py-3"><ThreatBadge verdict={scan.verdict} /></td>
                 <td className="px-4 py-3 font-semibold">{scan.threatScore}/100</td>
@@ -30,4 +36,3 @@ export default function ScanTable({ scans = [] }) {
     </div>
   );
 }
-

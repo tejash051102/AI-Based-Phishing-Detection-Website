@@ -33,6 +33,31 @@ Authorization: Bearer <jwt>
 }
 ```
 
+### Forgot Password
+
+`POST /auth/forgot-password`
+
+```json
+{
+  "email": "jane@example.com"
+}
+```
+
+### Reset Password
+
+`POST /auth/reset-password`
+
+```json
+{
+  "token": "reset-token-from-email",
+  "password": "NewStrongPass123"
+}
+```
+
+### Verify Email
+
+`GET /auth/verify-email/:token`
+
 ## Scans
 
 ### Create URL or Text Scan
@@ -54,6 +79,17 @@ Form-data field: `file`
 
 Allowed extensions: `.txt`, `.eml`, `.csv`, `.json`
 
+The API extracts URLs and text/message blocks and returns all generated scans:
+
+```json
+{
+  "scan": {},
+  "scans": [],
+  "extracted": 3,
+  "fileBatchId": "batch-id"
+}
+```
+
 ### List Scan History
 
 `GET /scans?page=1&limit=10&verdict=phishing&search=login`
@@ -72,8 +108,26 @@ Admin role required.
 
 ```text
 GET /admin/overview
+GET /admin/threat-map
 GET /admin/scans
 GET /admin/users
 PATCH /admin/users/:id/block
 ```
 
+## Chatbot
+
+`POST /chatbot`
+
+```json
+{
+  "message": "Explain this phishing result",
+  "scanId": "optional-scan-id"
+}
+```
+
+## AI Model
+
+```text
+POST /train
+GET /model/metrics
+```

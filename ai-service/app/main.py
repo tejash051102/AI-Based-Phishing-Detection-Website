@@ -1,8 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .model import load_model, predict_text, predict_url, train_default_model
+from pathlib import Path
+
+from .model import load_model, predict_text, predict_url
 from .schemas import PredictionResponse, TextRequest, UrlRequest
+from .training import load_metrics, train_from_dataset
 
 app = FastAPI(title="PhishGuard AI Service", version="1.0.0")
 model = load_model()
@@ -31,8 +34,13 @@ def text_prediction(payload: TextRequest):
 
 
 @app.post("/train")
-def train():
+def train(dataset_path: str | None = None):
     global model
-    model = train_default_model()
-    return {"message": "Model trained", "samples": "demo"}
+    metrics = train_from_dataset(Path(dataset_path) if dataset_path else None)
+    model = load_model()
+    return {"message": "Model trained", "metrics": metrics}
 
+
+@app.get("/model/metrics")
+def model_metrics():
+    return load_metrics()

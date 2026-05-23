@@ -9,6 +9,11 @@
   password: String,
   role: "user" | "admin",
   blocked: Boolean,
+  emailVerified: Boolean,
+  emailVerificationToken: String,
+  emailVerificationExpires: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
   avatar: String,
   lastLoginAt: Date,
   createdAt: Date,
@@ -31,6 +36,9 @@
   aiDetails: Object,
   reputation: Object,
   fileName: String,
+  fileBatchId: String,
+  extractedFromFile: Boolean,
+  sourceLabel: String,
   sourceIp: String,
   status: "completed" | "reviewed" | "dismissed",
   createdAt: Date,
@@ -68,4 +76,3 @@
   updatedAt: Date
 }
 ```
-

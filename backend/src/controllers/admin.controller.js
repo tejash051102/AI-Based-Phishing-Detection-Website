@@ -2,6 +2,22 @@ import ScanReport from "../models/ScanReport.js";
 import ThreatLog from "../models/ThreatLog.js";
 import User from "../models/User.js";
 
+const GEO_POINTS = [
+  { country: "India", city: "Mumbai", lat: 19.076, lng: 72.8777 },
+  { country: "United States", city: "Ashburn", lat: 39.0438, lng: -77.4874 },
+  { country: "Germany", city: "Frankfurt", lat: 50.1109, lng: 8.6821 },
+  { country: "Singapore", city: "Singapore", lat: 1.3521, lng: 103.8198 },
+  { country: "Brazil", city: "Sao Paulo", lat: -23.5558, lng: -46.6396 },
+  { country: "United Kingdom", city: "London", lat: 51.5072, lng: -0.1276 }
+];
+
+function geoFromScan(scan) {
+  const seed = String(scan.sourceIp || scan._id || "")
+    .split("")
+    .reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return GEO_POINTS[seed % GEO_POINTS.length];
+}
+
 export async function adminOverview(_req, res, next) {
   try {
     const [users, scans, blockedUsers, verdicts, recentLogs] = await Promise.all([
@@ -59,3 +75,31 @@ export async function toggleBlockUser(req, res, next) {
   }
 }
 
+export async function threatMap(req, res, next) {
+  try {
+    const scans = await ScanReport.find({ verdict: { $in: ["suspicious", "phishing"] } })
+      .sort({ createdAt: -1 })
+      .limit(200)
+      .populate("user", "name email");
+    const grouped = new Map();
+    scans.forEach((scan) => {
+      const geo = geoFromScan(scan);
+      const key = `${geo.country}:${scan.verdict}:${scan.type}`;
+      const current = grouped.get(key) || {
+        ...geo,
+        verdict: scan.verdict,
+        type: scan.type,
+        count: 0,
+        maxScore: 0,
+        latest: scan.createdAt
+      };
+      current.count += 1;
+      current.maxScore = Math.max(current.maxScore, scan.threatScore);
+      current.latest = current.latest > scan.createdAt ? current.latest : scan.createdAt;
+      grouped.set(key, current);
+    });
+    res.json({ points: [...grouped.values()], recent: scans.slice(0, 12) });
+  } catch (error) {
+    next(error);
+  }
+}

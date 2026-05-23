@@ -100,4 +100,3 @@ def predict_text(text: str) -> dict:
         "indicators": indicators,
         "features": features,
     }
-

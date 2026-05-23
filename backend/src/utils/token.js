@@ -13,7 +13,7 @@ export function publicUser(user) {
     email: user.email,
     role: user.role,
     blocked: user.blocked,
+    emailVerified: user.emailVerified,
     avatar: user.avatar
   };
 }
-

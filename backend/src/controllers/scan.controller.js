@@ -7,6 +7,7 @@ import { predictThreat } from "../services/ai.service.js";
 import { checkVirusTotal } from "../services/reputation.service.js";
 import { sendThreatAlert } from "../services/email.service.js";
 import { buildScanPdf } from "../services/report.service.js";
+import { extractScanItems } from "../services/fileParser.service.js";
 
 export const scanRules = [
   body("type").isIn(["url", "text"]).withMessage("Type must be url or text"),
@@ -26,7 +27,7 @@ function verdictFromScore(score) {
   return "safe";
 }
 
-async function persistScan({ req, type, content, fileName }) {
+async function persistScan({ req, type, content, fileName, fileBatchId, extractedFromFile = false, sourceLabel }) {
   const ai = await predictThreat({ type: type === "file" ? "text" : type, content });
   const threatScore = Math.round((ai.probability || 0) * 100);
   const reputation = type === "url" ? await checkVirusTotal(content) : undefined;
@@ -44,6 +45,9 @@ async function persistScan({ req, type, content, fileName }) {
     aiDetails: ai,
     reputation,
     fileName,
+    fileBatchId,
+    extractedFromFile,
+    sourceLabel,
     sourceIp: req.ip
   });
 
@@ -88,13 +92,34 @@ export async function uploadScan(req, res, next) {
   try {
     if (!req.file) return res.status(400).json({ message: "Upload a .txt, .eml, .csv, or .json file" });
     const content = await fs.readFile(req.file.path, "utf8");
-    const scan = await persistScan({
-      req,
-      type: "file",
-      content: content.slice(0, 12000),
-      fileName: req.file.originalname
-    });
-    res.status(201).json({ scan });
+    const extension = req.file.originalname.split(".").pop()?.toLowerCase() || "txt";
+    const extractedItems = extractScanItems(content, extension);
+    if (!extractedItems.length) {
+      const scan = await persistScan({
+        req,
+        type: "file",
+        content: content.slice(0, 12000),
+        fileName: req.file.originalname
+      });
+      return res.status(201).json({ scan, scans: [scan], extracted: 1 });
+    }
+
+    const fileBatchId = `${Date.now()}-${req.file.filename}`;
+    const scans = [];
+    for (const item of extractedItems) {
+      scans.push(
+        await persistScan({
+          req,
+          type: item.type,
+          content: item.content,
+          fileName: req.file.originalname,
+          fileBatchId,
+          extractedFromFile: true,
+          sourceLabel: item.sourceLabel
+        })
+      );
+    }
+    res.status(201).json({ scan: scans[0], scans, extracted: scans.length, fileBatchId });
   } catch (error) {
     next(error);
   }
@@ -164,4 +189,3 @@ export async function analytics(req, res, next) {
     next(error);
   }
 }
-

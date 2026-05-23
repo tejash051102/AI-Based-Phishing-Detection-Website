@@ -5,19 +5,23 @@ import api from "../api/client";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 import ScanTable from "../components/ScanTable";
 import StatCard from "../components/StatCard";
+import ThreatMap from "../components/ThreatMap";
 
 export default function AdminPage() {
   const [overview, setOverview] = useState(null);
+  const [map, setMap] = useState({ points: [], recent: [] });
   const [usersList, setUsersList] = useState([]);
   const [scans, setScans] = useState([]);
 
   const load = async () => {
-    const [overviewRes, usersRes, scansRes] = await Promise.all([
+    const [overviewRes, mapRes, usersRes, scansRes] = await Promise.all([
       api.get("/admin/overview"),
+      api.get("/admin/threat-map"),
       api.get("/admin/users"),
       api.get("/admin/scans")
     ]);
     setOverview(overviewRes.data);
+    setMap(mapRes.data);
     setUsersList(usersRes.data.items);
     setScans(scansRes.data.items);
   };
@@ -41,6 +45,7 @@ export default function AdminPage() {
         <StatCard label="All Scans" value={overview.scans} icon={ShieldAlert} />
         <StatCard label="Blocked Users" value={overview.blockedUsers} icon={Ban} accent="text-signal-red" />
       </div>
+      <ThreatMap points={map.points} />
       <section className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
         <h2 className="mb-4 text-lg font-bold">User management</h2>
         <div className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -64,4 +69,3 @@ export default function AdminPage() {
     </div>
   );
 }
-

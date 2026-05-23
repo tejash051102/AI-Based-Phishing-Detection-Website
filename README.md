@@ -14,6 +14,12 @@ Modern full-stack AI-based phishing detection platform built with React, Tailwin
 - Optional VirusTotal reputation checks and SMTP email alerts
 - Dark/light responsive cybersecurity UI with charts, cards, toasts, and skeleton loading
 - Admin controls for all scans, analytics, activity logs, and blocking users
+- Versioned ML training pipeline with metrics and confusion matrix output
+- AI chatbot assistant for scan explanations and security guidance
+- Scan detail pages with model features, indicators, and PDF export
+- Password reset and email verification flows
+- Multi-item file scanning for extracted URLs and message blocks
+- Live admin threat map for suspicious and phishing activity
 
 ## Folder Structure
 
@@ -26,7 +32,7 @@ phishguard-ai-platform/
       middleware/          auth, validation, upload, errors
       models/              Users, ScanReports, ThreatLogs, Notifications
       routes/              auth, scans, admin, notifications
-      services/            AI bridge, VirusTotal, email, PDF reports
+      services/            AI bridge, VirusTotal, email, PDF, chatbot, file parsing
       utils/               JWT helpers and seed script
     uploads/
     .env.example
@@ -46,7 +52,8 @@ phishguard-ai-platform/
       main.py              FastAPI routes
       model.py             demo RandomForest model
       schemas.py           request/response models
-    train_model.py
+    train_model.py          dataset training entrypoint
+    data/                   sample labelled URL dataset
     requirements.txt
   docs/
     DATABASE.md
@@ -140,12 +147,18 @@ Open `http://localhost:5173`.
 - `POST /api/auth/register`
 - `POST /api/auth/login`
 - `GET /api/auth/me`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
+- `GET /api/auth/verify-email/:token`
+- `POST /api/auth/resend-verification`
 - `POST /api/scans`
 - `POST /api/scans/upload`
 - `GET /api/scans`
 - `GET /api/scans/analytics`
 - `GET /api/scans/:id/export`
+- `POST /api/chatbot`
 - `GET /api/admin/overview`
+- `GET /api/admin/threat-map`
 - `GET /api/admin/scans`
 - `GET /api/admin/users`
 - `PATCH /api/admin/users/:id/block`
@@ -156,4 +169,18 @@ Open `http://localhost:5173`.
 - `POST /predict/url` with `{ "url": "https://example.com" }`
 - `POST /predict/text` with `{ "text": "Paste suspicious message" }`
 - `POST /train`
+- `GET /model/metrics`
 
+Training reads `ai-service/data/sample_phishing_urls.csv` by default. For a real dataset, provide a CSV with `url` and `label` columns and call:
+
+```bash
+python train_model.py
+```
+
+The training pipeline writes:
+
+```text
+ai-service/app/models/phishing_url_model.joblib
+ai-service/app/models/metrics.json
+ai-service/app/models/versions/phishing_url_model_<timestamp>.joblib
+```

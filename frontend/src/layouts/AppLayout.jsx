@@ -2,6 +2,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import { Bell, Bot, History, LayoutDashboard, LogOut, Moon, ScanLine, ShieldCheck, Sun, Users, Zap } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import ChatbotPanel from "../components/ChatbotPanel";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -87,6 +88,7 @@ export default function AppLayout() {
           </NavLink>
         ))}
       </nav>
+      <ChatbotPanel />
     </div>
   );
 }

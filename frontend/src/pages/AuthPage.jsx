@@ -61,6 +61,11 @@ export default function AuthPage({ mode }) {
           <button disabled={loading} className="mt-6 w-full rounded bg-cyber-500 px-4 py-3 font-bold text-white transition hover:bg-cyber-600 disabled:opacity-60">
             {loading ? "Checking..." : isRegister ? "Register" : "Login"}
           </button>
+          {!isRegister && (
+            <Link className="mt-3 block text-center text-sm font-semibold text-cyber-400" to="/forgot-password">
+              Forgot password?
+            </Link>
+          )}
           <p className="mt-4 text-center text-sm text-slate-300">
             {isRegister ? "Already protected?" : "New here?"}{" "}
             <Link className="font-semibold text-cyber-400" to={isRegister ? "/login" : "/register"}>
@@ -72,4 +77,3 @@ export default function AuthPage({ mode }) {
     </div>
   );
 }
-

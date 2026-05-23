@@ -13,6 +13,9 @@ const scanReportSchema = new mongoose.Schema(
     aiDetails: { type: mongoose.Schema.Types.Mixed },
     reputation: { type: mongoose.Schema.Types.Mixed },
     fileName: { type: String },
+    fileBatchId: { type: String },
+    extractedFromFile: { type: Boolean, default: false },
+    sourceLabel: { type: String },
     sourceIp: { type: String },
     status: { type: String, enum: ["completed", "reviewed", "dismissed"], default: "completed" }
   },
@@ -24,4 +27,3 @@ scanReportSchema.index({ verdict: 1, threatScore: -1 });
 scanReportSchema.index({ input: "text", normalizedInput: "text" });
 
 export default mongoose.model("ScanReport", scanReportSchema);
-

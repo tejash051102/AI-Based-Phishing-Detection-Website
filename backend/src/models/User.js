@@ -8,6 +8,11 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true, minlength: 8, select: false },
     role: { type: String, enum: ["user", "admin"], default: "user" },
     blocked: { type: Boolean, default: false },
+    emailVerified: { type: Boolean, default: false },
+    emailVerificationToken: { type: String, select: false },
+    emailVerificationExpires: { type: Date, select: false },
+    passwordResetToken: { type: String, select: false },
+    passwordResetExpires: { type: Date, select: false },
     avatar: { type: String },
     lastLoginAt: { type: Date }
   },
@@ -25,4 +30,3 @@ userSchema.methods.comparePassword = function comparePassword(candidate) {
 };
 
 export default mongoose.model("User", userSchema);
-

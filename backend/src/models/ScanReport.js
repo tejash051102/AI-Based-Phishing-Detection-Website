@@ -17,6 +17,11 @@ const scanReportSchema = new mongoose.Schema(
     extractedFromFile: { type: Boolean, default: false },
     sourceLabel: { type: String },
     sourceIp: { type: String },
+    userFeedback: {
+      label: { type: String, enum: ["accurate", "false_positive", "false_negative"] },
+      note: { type: String, maxlength: 500 },
+      submittedAt: { type: Date }
+    },
     status: { type: String, enum: ["completed", "reviewed", "dismissed"], default: "completed" }
   },
   { timestamps: true }

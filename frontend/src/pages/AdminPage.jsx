@@ -1,4 +1,4 @@
-import { Ban, ShieldAlert, Users } from "lucide-react";
+import { Ban, MessageSquareWarning, ShieldAlert, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import api from "../api/client";
@@ -38,6 +38,11 @@ export default function AdminPage() {
 
   if (!overview) return <LoadingSkeleton rows={5} />;
 
+  const feedbackCounts = ["false_positive", "false_negative", "accurate"].map((label) => ({
+    _id: label,
+    count: overview.feedback?.find((item) => item._id === label)?.count || 0
+  }));
+
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-3">
@@ -45,6 +50,20 @@ export default function AdminPage() {
         <StatCard label="All Scans" value={overview.scans} icon={ShieldAlert} />
         <StatCard label="Blocked Users" value={overview.blockedUsers} icon={Ban} accent="text-signal-red" />
       </div>
+      <section className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+        <div className="mb-4 flex items-center gap-2">
+          <MessageSquareWarning className="text-cyber-500" />
+          <h2 className="text-lg font-bold">Model feedback queue</h2>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {feedbackCounts.map((item) => (
+            <div key={item._id} className="rounded bg-slate-50 p-4 dark:bg-slate-950">
+              <p className="text-sm capitalize text-slate-500">{String(item._id).replace(/_/g, " ")}</p>
+              <p className="text-2xl font-black">{item.count}</p>
+            </div>
+          ))}
+        </div>
+      </section>
       <ThreatMap points={map.points} />
       <section className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
         <h2 className="mb-4 text-lg font-bold">User management</h2>

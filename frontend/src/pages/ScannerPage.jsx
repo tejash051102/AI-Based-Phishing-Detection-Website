@@ -2,6 +2,7 @@ import { FileUp, Link as LinkIcon, MailWarning, Send } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../api/client";
+import ExplainabilityPanel from "../components/ExplainabilityPanel";
 import ThreatBadge from "../components/ThreatBadge";
 
 export default function ScannerPage() {
@@ -113,6 +114,11 @@ export default function ScannerPage() {
           </div>
         )}
       </aside>
+      {result && (
+        <div className="xl:col-span-2">
+          <ExplainabilityPanel scan={result} compact />
+        </div>
+      )}
     </div>
   );
 }

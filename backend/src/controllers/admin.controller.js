@@ -20,14 +20,18 @@ function geoFromScan(scan) {
 
 export async function adminOverview(_req, res, next) {
   try {
-    const [users, scans, blockedUsers, verdicts, recentLogs] = await Promise.all([
+    const [users, scans, blockedUsers, verdicts, feedback, recentLogs] = await Promise.all([
       User.countDocuments(),
       ScanReport.countDocuments(),
       User.countDocuments({ blocked: true }),
       ScanReport.aggregate([{ $group: { _id: "$verdict", count: { $sum: 1 } } }]),
+      ScanReport.aggregate([
+        { $match: { "userFeedback.label": { $exists: true } } },
+        { $group: { _id: "$userFeedback.label", count: { $sum: 1 } } }
+      ]),
       ThreatLog.find().sort({ createdAt: -1 }).limit(20).populate("user", "name email")
     ]);
-    res.json({ users, scans, blockedUsers, verdicts, recentLogs });
+    res.json({ users, scans, blockedUsers, verdicts, feedback, recentLogs });
   } catch (error) {
     next(error);
   }

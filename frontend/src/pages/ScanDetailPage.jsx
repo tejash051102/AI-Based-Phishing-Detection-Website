@@ -1,14 +1,17 @@
-import { Download, ShieldAlert } from "lucide-react";
+import { Download, MessageSquareWarning, ShieldAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../api/client";
+import ExplainabilityPanel from "../components/ExplainabilityPanel";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 import ThreatBadge from "../components/ThreatBadge";
 
 export default function ScanDetailPage() {
   const { id } = useParams();
   const [scan, setScan] = useState(null);
+  const [feedbackNote, setFeedbackNote] = useState("");
+  const [savingFeedback, setSavingFeedback] = useState(false);
 
   useEffect(() => {
     api.get(`/scans/${id}`).then((res) => setScan(res.data.scan));
@@ -28,9 +31,21 @@ export default function ScanDetailPage() {
     }
   };
 
-  if (!scan) return <LoadingSkeleton rows={5} />;
+  const submitFeedback = async (label) => {
+    setSavingFeedback(true);
+    try {
+      const { data } = await api.patch(`/scans/${id}/feedback`, { label, note: feedbackNote });
+      setScan(data.scan);
+      toast.success("Feedback saved for model review");
+      setFeedbackNote("");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Could not save feedback");
+    } finally {
+      setSavingFeedback(false);
+    }
+  };
 
-  const features = scan.aiDetails?.features || {};
+  if (!scan) return <LoadingSkeleton rows={5} />;
 
   return (
     <div className="space-y-6">
@@ -73,18 +88,41 @@ export default function ScanDetailPage() {
           </div>
         </section>
         <section className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-          <h3 className="text-lg font-bold">Model features</h3>
-          <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
-            {Object.entries(features).map(([key, value]) => (
-              <div key={key} className="rounded bg-slate-50 p-3 dark:bg-slate-950">
-                <p className="text-xs text-slate-500">{key}</p>
-                <p className="font-bold">{String(value)}</p>
-              </div>
-            ))}
+          <div className="flex items-start gap-3">
+            <MessageSquareWarning className="mt-1 text-cyber-500" />
+            <div>
+              <h3 className="text-lg font-bold">Report model feedback</h3>
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Mark incorrect verdicts so admins can review false positives and false negatives.
+              </p>
+            </div>
+          </div>
+          {scan.userFeedback?.label && (
+            <div className="mt-4 rounded bg-slate-50 p-3 text-sm dark:bg-slate-950">
+              Current feedback: <span className="font-semibold">{scan.userFeedback.label.replace(/_/g, " ")}</span>
+            </div>
+          )}
+          <textarea
+            rows={3}
+            className="mt-4 w-full rounded border border-slate-200 bg-slate-50 p-3 text-sm outline-none focus:border-cyber-500 dark:border-slate-800 dark:bg-slate-950"
+            placeholder="Optional note for review..."
+            value={feedbackNote}
+            onChange={(event) => setFeedbackNote(event.target.value)}
+          />
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button disabled={savingFeedback} onClick={() => submitFeedback("accurate")} className="rounded border border-slate-200 px-3 py-2 text-sm font-semibold dark:border-slate-700">
+              Verdict is accurate
+            </button>
+            <button disabled={savingFeedback} onClick={() => submitFeedback("false_positive")} className="rounded border border-slate-200 px-3 py-2 text-sm font-semibold dark:border-slate-700">
+              False positive
+            </button>
+            <button disabled={savingFeedback} onClick={() => submitFeedback("false_negative")} className="rounded bg-cyber-500 px-3 py-2 text-sm font-semibold text-white">
+              False negative
+            </button>
           </div>
         </section>
       </div>
+      <ExplainabilityPanel scan={scan} />
     </div>
   );
 }
-

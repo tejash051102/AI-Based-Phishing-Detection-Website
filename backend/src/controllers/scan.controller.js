@@ -21,6 +21,11 @@ export const listRules = [
   query("type").optional().isIn(["url", "text", "file"])
 ];
 
+export const feedbackRules = [
+  body("label").isIn(["accurate", "false_positive", "false_negative"]).withMessage("Feedback label is invalid"),
+  body("note").optional().trim().isLength({ max: 500 }).withMessage("Feedback note must be 500 characters or fewer")
+];
+
 function verdictFromScore(score) {
   if (score >= 75) return "phishing";
   if (score >= 45) return "suspicious";
@@ -163,6 +168,35 @@ export async function exportScan(req, res, next) {
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename=scan-${scan._id}.pdf`);
     res.send(pdf);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function submitScanFeedback(req, res, next) {
+  try {
+    const scan = await ScanReport.findOne({ _id: req.params.id, user: req.user._id });
+    if (!scan) return res.status(404).json({ message: "Scan not found" });
+
+    scan.userFeedback = {
+      label: req.body.label,
+      note: req.body.note || "",
+      submittedAt: new Date()
+    };
+    scan.status = "reviewed";
+    await scan.save();
+
+    await ThreatLog.create({
+      user: req.user._id,
+      scan: scan._id,
+      event: "scan_feedback_submitted",
+      severity: req.body.label === "accurate" ? "low" : "medium",
+      metadata: { feedback: req.body.label, verdict: scan.verdict, threatScore: scan.threatScore },
+      ip: req.ip,
+      userAgent: req.headers["user-agent"]
+    });
+
+    res.json({ scan });
   } catch (error) {
     next(error);
   }

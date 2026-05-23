@@ -141,6 +141,17 @@ Open `http://localhost:5173`.
 - MongoDB Atlas should use a dedicated database user and network access restricted to deployed services.
 - Replace the demo model with a trained model from a larger labelled phishing dataset before production use.
 - Store uploaded files in object storage for production rather than local disk.
+- Deployment templates are included in `vercel.json`, `render.yaml`, service Dockerfiles, and `docker-compose.yml`.
+
+## Testing
+
+```bash
+npm test --prefix backend
+npm test --prefix frontend
+cd ai-service && pytest
+```
+
+The backend tests cover API health, request validation, and file parsing. The AI tests cover feature extraction and predictions. The frontend tests cover reusable UI components and assistant interaction.
 
 ## API Summary
 

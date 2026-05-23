@@ -12,10 +12,25 @@ import { errorHandler, notFound } from "./middleware/error.middleware.js";
 
 const app = express();
 
+const configuredOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+function isAllowedDevOrigin(origin) {
+  if (!origin || process.env.NODE_ENV === "production") return false;
+  return /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}):\d+$/.test(origin);
+}
+
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    origin(origin, callback) {
+      if (!origin || configuredOrigins.includes(origin) || isAllowedDevOrigin(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS blocked origin: ${origin}`));
+    },
     credentials: true
   })
 );

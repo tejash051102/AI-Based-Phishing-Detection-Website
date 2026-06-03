@@ -6,16 +6,16 @@ import ChatbotPanel from "../components/ChatbotPanel";
 import NotificationCenter from "../components/NotificationCenter";
 
 const nav = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/scanner", label: "Scanner", icon: ScanLine },
-  { to: "/history", label: "History", icon: History },
-  { to: "/tips", label: "Tips", icon: Zap }
+  { to: "/dashboard", label: "Command Center", icon: LayoutDashboard },
+  { to: "/scanner", label: "Threat Scanner", icon: ScanLine },
+  { to: "/history", label: "Audit History", icon: History },
+  { to: "/tips", label: "Security Playbook", icon: Zap }
 ];
 
 export default function AppLayout() {
   const { user, logout, isAdmin } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const items = isAdmin ? [...nav, { to: "/admin", label: "Admin", icon: Users }] : nav;
+  const items = isAdmin ? [...nav, { to: "/admin", label: "Admin Console", icon: Users }] : nav;
 
   return (
     <div className="min-h-screen bg-panel text-ink dark:bg-slate-950 dark:text-slate-100">
@@ -24,8 +24,12 @@ export default function AppLayout() {
           <img src="/logo.svg" alt="PhishGuard AI" className="h-14 w-14 rounded bg-white object-contain p-1 shadow-glow" />
           <div className="min-w-0">
             <p className="text-lg font-bold">PhishGuard AI</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Threat intelligence console</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Enterprise threat defense</p>
           </div>
+        </div>
+        <div className="mb-5 rounded border border-cyber-500/20 bg-cyber-50 p-3 text-xs text-slate-600 dark:border-cyber-500/30 dark:bg-slate-900 dark:text-slate-300">
+          <p className="font-bold text-cyber-700 dark:text-cyber-400">Security Operations</p>
+          <p className="mt-1">AI-assisted phishing detection, evidence tracking, and user risk monitoring.</p>
         </div>
         <nav className="space-y-2">
           {items.map(({ to, label, icon: Icon }) => (
@@ -49,8 +53,8 @@ export default function AppLayout() {
       <main className="lg:pl-72">
         <header className="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white/80 px-4 py-3 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80 sm:px-6">
           <div>
-            <p className="text-xs uppercase tracking-widest text-cyber-600 dark:text-cyber-400">Active defense</p>
-            <h1 className="text-xl font-bold">Welcome, {user?.name}</h1>
+            <p className="text-xs uppercase tracking-widest text-cyber-600 dark:text-cyber-400">PhishGuard Security Cloud</p>
+            <h1 className="text-xl font-bold">Welcome back, {user?.name}</h1>
           </div>
           <div className="flex items-center gap-2">
             <NotificationCenter />

@@ -129,6 +129,22 @@ export default function ScannerPage() {
 
   return (
     <div className="space-y-6">
+      <section className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-cyber-600 dark:text-cyber-400">Threat Intake Workflow</p>
+            <h2 className="mt-2 text-2xl font-black">Analyze suspicious URLs, emails, and files</h2>
+            <p className="mt-2 max-w-3xl text-sm text-slate-500 dark:text-slate-400">
+              Use PhishGuard AI to triage submissions, capture indicators, generate evidence, and support analyst review.
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-2 text-center text-xs">
+            <div className="rounded bg-slate-50 p-3 dark:bg-slate-950"><p className="font-black">AI</p><p className="text-slate-500">Scoring</p></div>
+            <div className="rounded bg-slate-50 p-3 dark:bg-slate-950"><p className="font-black">PDF</p><p className="text-slate-500">Evidence</p></div>
+            <div className="rounded bg-slate-50 p-3 dark:bg-slate-950"><p className="font-black">SOC</p><p className="text-slate-500">Ready</p></div>
+          </div>
+        </div>
+      </section>
       <section className="rounded border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
         <div className="flex flex-wrap gap-2">
           {modes.map(({ id, label, icon: Icon }) => (

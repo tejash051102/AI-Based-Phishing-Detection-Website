@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { BarChart3, FileSearch, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
@@ -33,17 +34,32 @@ export default function AuthPage({ mode }) {
             <img src="/logo.svg" alt="PhishGuard AI" className="h-40 w-40 rounded bg-white object-contain p-2 shadow-glow sm:h-48 sm:w-48" />
             <span className="text-2xl font-bold">PhishGuard AI</span>
           </div>
-          <h1 className="max-w-3xl text-4xl font-black leading-tight sm:text-6xl">AI-powered phishing defense for URLs, emails, and suspicious files.</h1>
+          <h1 className="max-w-3xl text-4xl font-black leading-tight sm:text-6xl">Enterprise-grade AI phishing defense for modern teams.</h1>
           <p className="mt-5 max-w-2xl text-lg text-slate-300">
-            Scan threats, monitor history, export evidence, and give administrators the controls they need to respond quickly.
+            Detect malicious URLs, inspect suspicious emails, manage evidence, and monitor organizational risk from one professional security console.
           </p>
+          <div className="mt-6 grid max-w-2xl gap-3 sm:grid-cols-3">
+            <div className="rounded border border-white/10 bg-white/5 p-3">
+              <ShieldCheck className="text-cyber-400" size={20} />
+              <p className="mt-2 text-sm font-bold">Real-time protection</p>
+            </div>
+            <div className="rounded border border-white/10 bg-white/5 p-3">
+              <FileSearch className="text-cyber-400" size={20} />
+              <p className="mt-2 text-sm font-bold">Evidence reports</p>
+            </div>
+            <div className="rounded border border-white/10 bg-white/5 p-3">
+              <BarChart3 className="text-cyber-400" size={20} />
+              <p className="mt-2 text-sm font-bold">Risk analytics</p>
+            </div>
+          </div>
           <Link to="/quick-scan" className="mt-6 inline-flex rounded bg-cyber-500 px-5 py-3 font-bold text-white shadow-glow">
             Try public quick scan
           </Link>
         </section>
         <form onSubmit={submit} className="glass rounded border border-white/10 p-6 shadow-glow">
-          <h2 className="text-2xl font-bold">{isRegister ? "Create account" : "Sign in"}</h2>
-          <p className="mt-1 text-sm text-slate-300">{isRegister ? "Start monitoring suspicious messages." : "Return to your security console."}</p>
+          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-cyber-400">Secure Access</p>
+          <h2 className="text-2xl font-bold">{isRegister ? "Create workspace account" : "Sign in to console"}</h2>
+          <p className="mt-1 text-sm text-slate-300">{isRegister ? "Start monitoring suspicious messages with a managed account." : "Return to your organization security workspace."}</p>
           {isRegister && (
             <label className="mt-5 block text-sm">
               Name

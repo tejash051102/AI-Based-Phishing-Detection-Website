@@ -33,6 +33,21 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <section className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-cyber-600 dark:text-cyber-400">Executive Security Overview</p>
+            <h2 className="mt-2 text-2xl font-black">Organization phishing exposure dashboard</h2>
+            <p className="mt-2 max-w-3xl text-sm text-slate-500 dark:text-slate-400">
+              Monitor scan activity, high-risk detections, model confidence, and user exposure trends from a single operational view.
+            </p>
+          </div>
+          <div className="rounded bg-slate-50 p-4 text-sm dark:bg-slate-950">
+            <p className="font-bold">Operational status</p>
+            <p className="mt-1 text-slate-500 dark:text-slate-400">AI scanning service, audit history, notifications, and reports are enabled.</p>
+          </div>
+        </div>
+      </section>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Safe Scans" value={counts.safe} icon={CheckCircle2} accent="text-signal-green" />
         <StatCard label="Suspicious" value={counts.suspicious} icon={AlertTriangle} accent="text-signal-amber" />

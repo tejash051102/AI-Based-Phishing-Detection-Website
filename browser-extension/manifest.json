@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "PhishGuard AI Link Scanner",
+  "version": "1.0.0",
+  "description": "Right-click links and scan them with PhishGuard AI.",
+  "permissions": ["contextMenus", "storage", "notifications"],
+  "host_permissions": ["http://localhost:5000/*", "https://*/"],
+  "action": {
+    "default_title": "PhishGuard AI",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon.svg",
+    "48": "icons/icon.svg",
+    "128": "icons/icon.svg"
+  }
+}

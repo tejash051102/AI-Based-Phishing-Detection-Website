@@ -1,6 +1,7 @@
 import ScanReport from "../models/ScanReport.js";
 import ThreatLog from "../models/ThreatLog.js";
 import User from "../models/User.js";
+import { getModelMetrics } from "../services/ai.service.js";
 
 const GEO_POINTS = [
   { country: "India", city: "Mumbai", lat: 19.076, lng: 72.8777 },
@@ -103,6 +104,30 @@ export async function threatMap(req, res, next) {
       grouped.set(key, current);
     });
     res.json({ points: [...grouped.values()], recent: scans.slice(0, 12) });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function modelMonitoring(_req, res, next) {
+  try {
+    const [metrics, feedback, scans, latestScan] = await Promise.all([
+      getModelMetrics().catch(() => null),
+      ScanReport.aggregate([
+        { $match: { "userFeedback.label": { $exists: true } } },
+        { $group: { _id: "$userFeedback.label", count: { $sum: 1 } } }
+      ]),
+      ScanReport.countDocuments(),
+      ScanReport.findOne().sort({ createdAt: -1 })
+    ]);
+
+    res.json({
+      metrics,
+      feedback,
+      datasetSize: metrics?.datasetSize || metrics?.samples || scans,
+      modelVersion: metrics?.version || "demo-random-forest",
+      lastTrainedAt: metrics?.trainedAt || metrics?.createdAt || latestScan?.createdAt || null
+    });
   } catch (error) {
     next(error);
   }

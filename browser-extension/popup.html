@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PhishGuard AI</title>
+    <style>
+      body { width: 320px; margin: 0; font-family: Inter, Segoe UI, Arial, sans-serif; color: #061842; background: #f8fafc; }
+      main { padding: 16px; }
+      img { width: 58px; height: 58px; object-fit: contain; }
+      h1 { margin: 8px 0 4px; font-size: 18px; }
+      p { margin: 0; color: #64748b; font-size: 13px; }
+      .card { margin-top: 14px; border: 1px solid #dbe3ee; border-radius: 8px; background: white; padding: 12px; }
+      .score { font-size: 34px; font-weight: 900; color: #1168f4; }
+      .verdict { display: inline-block; margin-top: 8px; border-radius: 999px; background: #dbeafe; padding: 5px 9px; font-weight: 800; text-transform: capitalize; }
+      label { display: block; margin-top: 10px; font-size: 12px; font-weight: 800; }
+      input { box-sizing: border-box; width: 100%; margin-top: 5px; border: 1px solid #dbe3ee; border-radius: 6px; padding: 8px; }
+      button { margin-top: 10px; width: 100%; border: 0; border-radius: 6px; background: #1168f4; color: white; padding: 9px; font-weight: 800; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="icons/icon.svg" alt="PhishGuard AI" />
+      <h1>PhishGuard AI</h1>
+      <p>Right-click any link and choose “Scan link with PhishGuard AI”.</p>
+      <div class="card" id="result">No scan yet.</div>
+      <div class="card">
+        <strong>Website sync</strong>
+        <p style="margin-top:4px">Paste your JWT token to save extension scans into your PhishGuard history.</p>
+        <label>API Base URL</label>
+        <input id="apiBase" placeholder="http://localhost:5000/api" />
+        <label>JWT Token</label>
+        <input id="authToken" placeholder="Optional token for history sync" />
+        <button id="save">Save settings</button>
+      </div>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

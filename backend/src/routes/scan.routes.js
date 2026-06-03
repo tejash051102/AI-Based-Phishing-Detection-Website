@@ -1,6 +1,9 @@
 import { Router } from "express";
 import {
   analytics,
+  analyzeHeaders,
+  bulkRules,
+  bulkScan,
   createScan,
   exportScan,
   feedbackRules,
@@ -9,7 +12,8 @@ import {
   listScans,
   scanRules,
   submitScanFeedback,
-  uploadScan
+  uploadScan,
+  previewUrl
 } from "../controllers/scan.controller.js";
 import { protect } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/upload.middleware.js";
@@ -21,6 +25,9 @@ router.use(protect);
 router.get("/", listRules, validate, listScans);
 router.get("/analytics", analytics);
 router.post("/", scanRules, validate, createScan);
+router.post("/bulk", bulkRules, validate, bulkScan);
+router.post("/preview", previewUrl);
+router.post("/headers/analyze", analyzeHeaders);
 router.post("/upload", upload.single("file"), uploadScan);
 router.get("/:id", getScan);
 router.patch("/:id/feedback", feedbackRules, validate, submitScanFeedback);

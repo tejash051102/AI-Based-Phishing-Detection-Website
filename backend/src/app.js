@@ -8,6 +8,7 @@ import scanRoutes from "./routes/scan.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import chatbotRoutes from "./routes/chatbot.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
+import publicRoutes from "./routes/public.routes.js";
 import { errorHandler, notFound } from "./middleware/error.middleware.js";
 
 const app = express();
@@ -52,6 +53,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/public", publicRoutes);
 app.use("/api/scans", scanRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/chatbot", chatbotRoutes);

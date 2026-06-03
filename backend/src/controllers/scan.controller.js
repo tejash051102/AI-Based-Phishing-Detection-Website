@@ -18,7 +18,9 @@ export const listRules = [
   query("page").optional().isInt({ min: 1 }),
   query("limit").optional().isInt({ min: 1, max: 100 }),
   query("verdict").optional().isIn(["safe", "suspicious", "phishing"]),
-  query("type").optional().isIn(["url", "text", "file"])
+  query("type").optional().isIn(["url", "text", "file"]),
+  query("from").optional({ checkFalsy: true }).isISO8601(),
+  query("to").optional({ checkFalsy: true }).isISO8601()
 ];
 
 export const feedbackRules = [
@@ -26,10 +28,70 @@ export const feedbackRules = [
   body("note").optional().trim().isLength({ max: 500 }).withMessage("Feedback note must be 500 characters or fewer")
 ];
 
+export const bulkRules = [
+  body("items").isArray({ min: 1, max: 30 }).withMessage("Provide 1 to 30 scan items"),
+  body("items.*").trim().isLength({ min: 3 }).withMessage("Each scan item must include content")
+];
+
 function verdictFromScore(score) {
   if (score >= 75) return "phishing";
   if (score >= 45) return "suspicious";
   return "safe";
+}
+
+function normalizeUrl(value) {
+  const trimmed = value.trim();
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
+function safeUrlPreview(value) {
+  const normalized = normalizeUrl(value);
+  const parsed = new URL(normalized);
+  return {
+    normalized,
+    domain: parsed.hostname,
+    protocol: parsed.protocol.replace(":", ""),
+    pathDepth: parsed.pathname.split("/").filter(Boolean).length,
+    queryLength: parsed.search.length,
+    hasCredentials: Boolean(parsed.username || parsed.password),
+    usesIpHost: /^\d{1,3}(\.\d{1,3}){3}$/.test(parsed.hostname),
+    recommendation: "Inspect the verdict, domain, and indicators before opening this link."
+  };
+}
+
+function analyzeEmailHeaders(content) {
+  const headerBlock = content.split(/\r?\n\r?\n/)[0] || content;
+  const get = (name) => headerBlock.match(new RegExp(`^${name}:\\s*(.+)$`, "im"))?.[1]?.trim() || "";
+  const received = headerBlock.match(/^Received:\s*(.+)$/gim) || [];
+  const authResults = get("Authentication-Results");
+  const from = get("From");
+  const replyTo = get("Reply-To");
+  const returnPath = get("Return-Path");
+  const checks = [
+    { label: "SPF", status: /spf=pass/i.test(authResults) ? "pass" : /spf=/i.test(authResults) ? "fail_or_softfail" : "unknown" },
+    { label: "DKIM", status: /dkim=pass/i.test(authResults) ? "pass" : /dkim=/i.test(authResults) ? "fail_or_softfail" : "unknown" },
+    { label: "DMARC", status: /dmarc=pass/i.test(authResults) ? "pass" : /dmarc=/i.test(authResults) ? "fail_or_softfail" : "unknown" }
+  ];
+  const mismatches = [];
+  if (replyTo && from && !replyTo.toLowerCase().includes(from.split("@").pop()?.replace(/[>"]/g, "").toLowerCase() || "")) {
+    mismatches.push("Reply-To domain differs from From domain");
+  }
+  if (returnPath && from && !returnPath.toLowerCase().includes(from.split("@").pop()?.replace(/[>"]/g, "").toLowerCase() || "")) {
+    mismatches.push("Return-Path domain differs from From domain");
+  }
+  return {
+    from,
+    replyTo,
+    returnPath,
+    subject: get("Subject"),
+    relayHops: received.length,
+    checks,
+    findings: [
+      ...checks.filter((item) => item.status !== "pass").map((item) => `${item.label} is ${item.status}`),
+      ...mismatches,
+      ...(received.length > 5 ? ["Unusually long relay path"] : [])
+    ]
+  };
 }
 
 async function persistScan({ req, type, content, fileName, fileBatchId, extractedFromFile = false, sourceLabel }) {
@@ -130,6 +192,36 @@ export async function uploadScan(req, res, next) {
   }
 }
 
+export async function bulkScan(req, res, next) {
+  try {
+    const scans = [];
+    for (const item of req.body.items) {
+      const content = item.trim();
+      const type = /^https?:\/\//i.test(content) || /^www\./i.test(content) ? "url" : "text";
+      scans.push(await persistScan({ req, type, content: type === "url" ? normalizeUrl(content) : content, sourceLabel: "Bulk scan" }));
+    }
+    res.status(201).json({ scans, total: scans.length });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function previewUrl(req, res, next) {
+  try {
+    res.json({ preview: safeUrlPreview(req.body.url || "") });
+  } catch (_error) {
+    res.status(400).json({ message: "Enter a valid URL to preview" });
+  }
+}
+
+export async function analyzeHeaders(req, res, next) {
+  try {
+    res.json({ analysis: analyzeEmailHeaders(req.body.content || "") });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function listScans(req, res, next) {
   try {
     const page = Number(req.query.page || 1);
@@ -138,6 +230,11 @@ export async function listScans(req, res, next) {
     if (req.query.verdict) filter.verdict = req.query.verdict;
     if (req.query.type) filter.type = req.query.type;
     if (req.query.search) filter.$text = { $search: req.query.search };
+    if (req.query.from || req.query.to) {
+      filter.createdAt = {};
+      if (req.query.from) filter.createdAt.$gte = new Date(req.query.from);
+      if (req.query.to) filter.createdAt.$lte = new Date(req.query.to);
+    }
 
     const [items, total] = await Promise.all([
       ScanReport.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
@@ -218,7 +315,13 @@ export async function analytics(req, res, next) {
       ]),
       ScanReport.find({ user }).sort({ createdAt: -1 }).limit(5)
     ]);
-    res.json({ summary, timeline, latest });
+    const total = summary.reduce((sum, item) => sum + item.count, 0);
+    const weightedRisk = summary.reduce((sum, item) => {
+      const weight = item._id === "phishing" ? 100 : item._id === "suspicious" ? 55 : 10;
+      return sum + item.count * weight;
+    }, 0);
+    const riskScore = total ? Math.round(weightedRisk / total) : 0;
+    res.json({ summary, timeline, latest, riskScore });
   } catch (error) {
     next(error);
   }

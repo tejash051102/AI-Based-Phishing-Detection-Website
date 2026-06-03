@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
@@ -31,15 +30,16 @@ export default function AuthPage({ mode }) {
       <div className="mx-auto grid min-h-screen max-w-6xl items-center gap-10 px-4 py-10 lg:grid-cols-[1fr_420px]">
         <section>
           <div className="mb-6 flex items-center gap-3">
-            <div className="grid h-12 w-12 place-items-center rounded bg-cyber-500 shadow-glow">
-              <ShieldCheck />
-            </div>
+            <img src="/logo.svg" alt="PhishGuard AI" className="h-40 w-40 rounded bg-white object-contain p-2 shadow-glow sm:h-48 sm:w-48" />
             <span className="text-2xl font-bold">PhishGuard AI</span>
           </div>
           <h1 className="max-w-3xl text-4xl font-black leading-tight sm:text-6xl">AI-powered phishing defense for URLs, emails, and suspicious files.</h1>
           <p className="mt-5 max-w-2xl text-lg text-slate-300">
             Scan threats, monitor history, export evidence, and give administrators the controls they need to respond quickly.
           </p>
+          <Link to="/quick-scan" className="mt-6 inline-flex rounded bg-cyber-500 px-5 py-3 font-bold text-white shadow-glow">
+            Try public quick scan
+          </Link>
         </section>
         <form onSubmit={submit} className="glass rounded border border-white/10 p-6 shadow-glow">
           <h2 className="text-2xl font-bold">{isRegister ? "Create account" : "Sign in"}</h2>

@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1080" role="img" aria-labelledby="title desc">
+  <title id="title">PhishGuard AI Logo</title>
+  <desc id="desc">Blue phishing detection logo with shield, hook, email threat symbol, circuit accents, and security feature labels.</desc>
+  <defs>
+    <linearGradient id="blueGradient" x1="225" y1="78" x2="972" y2="794" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#061842"/>
+      <stop offset="0.48" stop-color="#0b2a68"/>
+      <stop offset="1" stop-color="#1168f4"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#0a1e4c" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="1080" rx="56" fill="#ffffff"/>
+
+  <g filter="url(#shadow)">
+    <path d="M331 236c138-4 236-70 286-122 50 52 148 118 286 122v148c0 238-126 368-286 442-160-74-286-204-286-442V236Z" fill="url(#blueGradient)"/>
+    <path d="M617 114c50 52 148 118 286 122v148c0 238-126 368-286 442V114Z" fill="#1168f4" opacity="0.78"/>
+    <path d="M383 292c113-13 205-56 234-91 32 36 121 78 231 91v99c0 171-88 279-231 348-143-69-234-177-234-348v-99Z" fill="#ffffff"/>
+    <path d="M434 383h264c34 0 62 28 62 62v246H434V383Z" fill="url(#blueGradient)"/>
+    <path d="M430 474 618 615l191-141v211c0 25-20 45-45 45H475c-25 0-45-20-45-45V474Z" fill="url(#blueGradient)"/>
+    <path d="M430 474 618 615 809 474" fill="none" stroke="#ffffff" stroke-width="18" stroke-linejoin="round"/>
+    <path d="M430 690 589 570M809 690 650 570" fill="none" stroke="#ffffff" stroke-width="18" stroke-linecap="round"/>
+    <circle cx="618" cy="654" r="79" fill="#1168f4" stroke="#ffffff" stroke-width="18"/>
+    <path d="M618 610v52M618 693h.1" stroke="#ffffff" stroke-width="24" stroke-linecap="round"/>
+    <path d="M618 116v354c0 49-33 81-76 81-43 0-76-32-76-76 0-28 13-54 35-69l27 39c-10 7-15 18-15 30 0 17 12 29 29 29s29-12 29-34V171" fill="none" stroke="#061842" stroke-width="31" stroke-linecap="round"/>
+    <circle cx="618" cy="116" r="40" fill="#ffffff" stroke="#061842" stroke-width="24"/>
+    <circle cx="618" cy="341" r="29" fill="#ffffff" stroke="#061842" stroke-width="20"/>
+  </g>
+
+  <g fill="#1168f4">
+    <path d="M844 447h48l40-40h38" fill="none" stroke="#1168f4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="981" cy="407" r="20" fill="#ffffff" stroke="#1168f4" stroke-width="12"/>
+    <path d="M837 497h88l56-56h45" fill="none" stroke="#1168f4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="1039" cy="441" r="20" fill="#ffffff" stroke="#1168f4" stroke-width="12"/>
+    <path d="M835 553h114l42-42h48" fill="none" stroke="#1168f4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="1052" cy="511" r="20" fill="#ffffff" stroke="#1168f4" stroke-width="12"/>
+    <path d="M829 609h124l38-38h45" fill="none" stroke="#1168f4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="1047" cy="571" r="20" fill="#ffffff" stroke="#1168f4" stroke-width="12"/>
+    <path d="M837 663h86l36-36h41" fill="none" stroke="#1168f4" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="1013" cy="627" r="20" fill="#ffffff" stroke="#1168f4" stroke-width="12"/>
+  </g>
+
+  <g fill="#0b2a68">
+    <rect x="279" y="382" width="20" height="20"/>
+    <rect x="318" y="388" width="24" height="24"/>
+    <rect x="355" y="410" width="22" height="22" fill="#1168f4"/>
+    <rect x="293" y="450" width="26" height="26" fill="#1168f4"/>
+    <rect x="240" y="465" width="18" height="18"/>
+    <rect x="337" y="493" width="23" height="23"/>
+    <rect x="268" y="532" width="20" height="20" fill="#1168f4"/>
+    <rect x="357" y="573" width="25" height="25"/>
+    <rect x="319" y="616" width="18" height="18"/>
+  </g>
+
+  <g transform="translate(132 884)" fill="none" stroke="#1168f4" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M54 24c-18 0-30 14-30 30 0 6 2 12 5 17-15 3-25 15-25 31s13 29 29 29c3 19 18 33 38 33 18 0 33-12 37-29"/>
+    <path d="M78 16v151M78 46h30l22-22M78 83h42M78 121h34l24 24"/>
+    <circle cx="144" cy="24" r="8"/><circle cx="139" cy="83" r="8"/><circle cx="151" cy="151" r="8"/>
+  </g>
+  <text x="117" y="1000" fill="#061842" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">AI-Powered</text>
+  <text x="128" y="1037" fill="#061842" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Detection</text>
+  <path d="M336 876v164" stroke="#061842" stroke-width="4"/>
+
+  <g transform="translate(449 884)" fill="none" stroke="#1168f4" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 18 105 34v38c0 51-33 80-45 85-12-5-45-34-45-85V34l45-16Z"/>
+    <path d="M39 83l17 17 41-43"/>
+  </g>
+  <text x="419" y="1000" fill="#061842" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Real-Time</text>
+  <text x="427" y="1037" fill="#061842" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Protection</text>
+  <path d="M637 876v164" stroke="#061842" stroke-width="4"/>
+
+  <g transform="translate(729 884)" fill="none" stroke="#061842" stroke-width="11" stroke-linecap="round">
+    <circle cx="58" cy="58" r="43"/>
+    <path d="M91 91l46 46"/>
+  </g>
+  <text x="724" y="1000" fill="#061842" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Threat</text>
+  <text x="701" y="1037" fill="#061842" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Analysis</text>
+  <path d="M874 876v164" stroke="#061842" stroke-width="4"/>
+
+  <g transform="translate(984 884)" fill="none" stroke="#1168f4" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="58" cy="58" r="50"/>
+    <path d="M8 58h100M58 8c18 20 27 40 27 58s-9 38-27 50M58 8c-18 20-27 40-27 58s9 38 27 50M16 35h92M16 83h92"/>
+  </g>
+  <text x="989" y="1000" fill="#061842" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Web</text>
+  <text x="954" y="1037" fill="#061842" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">Security</text>
+</svg>

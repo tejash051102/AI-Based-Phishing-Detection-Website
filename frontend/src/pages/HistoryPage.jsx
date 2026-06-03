@@ -8,12 +8,13 @@ import ScanTable from "../components/ScanTable";
 export default function HistoryPage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState({ search: "", verdict: "", page: 1 });
+  const [query, setQuery] = useState({ search: "", verdict: "", type: "", from: "", to: "", page: 1 });
 
   useEffect(() => {
     setLoading(true);
+    const params = Object.fromEntries(Object.entries(query).filter(([, value]) => value !== ""));
     api
-      .get("/scans", { params: query })
+      .get("/scans", { params })
       .then((res) => setItems(res.data.items))
       .finally(() => setLoading(false));
   }, [query]);
@@ -46,6 +47,14 @@ export default function HistoryPage() {
           <option value="suspicious">Suspicious</option>
           <option value="phishing">Phishing</option>
         </select>
+        <select className="rounded border border-slate-200 bg-transparent px-3 py-2 dark:border-slate-800" value={query.type} onChange={(e) => setQuery({ ...query, type: e.target.value, page: 1 })}>
+          <option value="">All types</option>
+          <option value="url">URL</option>
+          <option value="text">Text</option>
+          <option value="file">File</option>
+        </select>
+        <input type="date" className="rounded border border-slate-200 bg-transparent px-3 py-2 dark:border-slate-800" value={query.from} onChange={(e) => setQuery({ ...query, from: e.target.value, page: 1 })} />
+        <input type="date" className="rounded border border-slate-200 bg-transparent px-3 py-2 dark:border-slate-800" value={query.to} onChange={(e) => setQuery({ ...query, to: e.target.value, page: 1 })} />
       </div>
       {loading ? <LoadingSkeleton rows={5} /> : <ScanTable scans={items} />}
       {items[0] && (

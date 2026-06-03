@@ -1,8 +1,9 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Bell, Bot, History, LayoutDashboard, LogOut, Moon, ScanLine, ShieldCheck, Sun, Users, Zap } from "lucide-react";
+import { Bot, History, LayoutDashboard, LogOut, Moon, ScanLine, Sun, Users, Zap } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import ChatbotPanel from "../components/ChatbotPanel";
+import NotificationCenter from "../components/NotificationCenter";
 
 const nav = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -20,10 +21,8 @@ export default function AppLayout() {
     <div className="min-h-screen bg-panel text-ink dark:bg-slate-950 dark:text-slate-100">
       <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-slate-200 bg-white/90 p-5 dark:border-slate-800 dark:bg-slate-950/90 lg:block">
         <div className="mb-8 flex items-center gap-3">
-          <div className="grid h-11 w-11 place-items-center rounded bg-cyber-500 text-white shadow-glow">
-            <ShieldCheck size={24} />
-          </div>
-          <div>
+          <img src="/logo.svg" alt="PhishGuard AI" className="h-14 w-14 rounded bg-white object-contain p-1 shadow-glow" />
+          <div className="min-w-0">
             <p className="text-lg font-bold">PhishGuard AI</p>
             <p className="text-xs text-slate-500 dark:text-slate-400">Threat intelligence console</p>
           </div>
@@ -54,9 +53,7 @@ export default function AppLayout() {
             <h1 className="text-xl font-bold">Welcome, {user?.name}</h1>
           </div>
           <div className="flex items-center gap-2">
-            <button className="rounded border border-slate-200 p-2 dark:border-slate-800" title="Notifications">
-              <Bell size={18} />
-            </button>
+            <NotificationCenter />
             <button className="rounded border border-slate-200 p-2 dark:border-slate-800" title="AI Assistant">
               <Bot size={18} />
             </button>

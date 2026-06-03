@@ -12,3 +12,7 @@ export async function predictThreat({ type, content }) {
   return data;
 }
 
+export async function getModelMetrics() {
+  const { data } = await aiClient.get("/model/metrics");
+  return data;
+}

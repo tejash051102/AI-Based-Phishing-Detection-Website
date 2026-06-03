@@ -8,6 +8,7 @@ import HistoryPage from "./pages/HistoryPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ScanDetailPage from "./pages/ScanDetailPage";
 import ScannerPage from "./pages/ScannerPage";
+import PublicQuickScanPage from "./pages/PublicQuickScanPage";
 import TipsPage from "./pages/TipsPage";
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 import { useAuth } from "./context/AuthContext";
@@ -25,6 +26,7 @@ export default function App() {
       <Route path="/login" element={<AuthPage mode="login" />} />
       <Route path="/register" element={<AuthPage mode="register" />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/quick-scan" element={<PublicQuickScanPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
       <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
       <Route

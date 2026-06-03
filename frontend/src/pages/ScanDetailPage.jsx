@@ -122,6 +122,23 @@ export default function ScanDetailPage() {
           </div>
         </section>
       </div>
+      <section className="rounded border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+        <h3 className="text-lg font-bold">Reputation and model data</h3>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <div className="rounded bg-slate-50 p-4 dark:bg-slate-950">
+            <p className="text-sm text-slate-500">External reputation</p>
+            <p className="text-xl font-black">{scan.reputation?.positives ?? 0} flag(s)</p>
+          </div>
+          <div className="rounded bg-slate-50 p-4 dark:bg-slate-950">
+            <p className="text-sm text-slate-500">Model features</p>
+            <p className="text-xl font-black">{Object.keys(scan.aiDetails?.features || {}).length}</p>
+          </div>
+          <div className="rounded bg-slate-50 p-4 dark:bg-slate-950">
+            <p className="text-sm text-slate-500">Review status</p>
+            <p className="text-xl font-black capitalize">{scan.status}</p>
+          </div>
+        </div>
+      </section>
       <ExplainabilityPanel scan={scan} />
     </div>
   );

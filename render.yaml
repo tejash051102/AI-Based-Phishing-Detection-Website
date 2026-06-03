@@ -1,4 +1,13 @@
 services:
+  - type: static_site
+    name: phishguard-frontend
+    rootDir: .
+    buildCommand: npm install --prefix frontend && npm run build --prefix frontend
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
+
   - type: web
     name: phishguard-api
     runtime: node
@@ -41,4 +50,3 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
-

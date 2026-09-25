@@ -12,7 +12,7 @@ Authorization: Bearer <jwt>
 
 ### Register
 
-`POST /auth/register`
+`POST /api/auth/register`
 
 ```json
 {
@@ -24,7 +24,7 @@ Authorization: Bearer <jwt>
 
 ### Login
 
-`POST /auth/login`
+`POST /api/auth/login`
 
 ```json
 {
@@ -35,7 +35,7 @@ Authorization: Bearer <jwt>
 
 ### Forgot Password
 
-`POST /auth/forgot-password`
+`POST /api/auth/forgot-password`
 
 ```json
 {
@@ -45,7 +45,7 @@ Authorization: Bearer <jwt>
 
 ### Reset Password
 
-`POST /auth/reset-password`
+`POST /api/auth/reset-password`
 
 ```json
 {
@@ -56,13 +56,13 @@ Authorization: Bearer <jwt>
 
 ### Verify Email
 
-`GET /auth/verify-email/:token`
+`GET /api/auth/verify-email/:token`
 
 ## Scans
 
 ### Create URL or Text Scan
 
-`POST /scans`
+`POST /api/scans`
 
 ```json
 {
@@ -73,7 +73,7 @@ Authorization: Bearer <jwt>
 
 ### Upload File Scan
 
-`POST /scans/upload`
+`POST /api/scans/upload`
 
 Form-data field: `file`
 
@@ -92,31 +92,31 @@ The API extracts URLs and text/message blocks and returns all generated scans:
 
 ### List Scan History
 
-`GET /scans?page=1&limit=10&verdict=phishing&search=login`
+`GET /api/scans?page=1&limit=10&verdict=phishing&search=login`
 
 ### Analytics
 
-`GET /scans/analytics`
+`GET /api/scans/analytics`
 
 ### Export PDF
 
-`GET /scans/:id/export`
+`GET /api/scans/:id/export`
 
 ## Admin
 
 Admin role required.
 
 ```text
-GET /admin/overview
-GET /admin/threat-map
-GET /admin/scans
-GET /admin/users
-PATCH /admin/users/:id/block
+GET /api/admin/overview
+GET /api/admin/threat-map
+GET /api/admin/scans
+GET /api/admin/users
+PATCH /api/admin/users/:id/block
 ```
 
 ## Chatbot
 
-`POST /chatbot`
+`POST /api/chatbot`
 
 ```json
 {

@@ -17,24 +17,32 @@ const configuredOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
+const allowedOrigins = new Set([
+  "https://phishgaurd-frontend.onrender.com",
+  ...configuredOrigins
+]);
 
 function isAllowedDevOrigin(origin) {
   if (!origin || process.env.NODE_ENV === "production") return false;
   return /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}):\d+$/.test(origin);
 }
 
+const corsOptions = {
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.has(origin) || isAllowedDevOrigin(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error(`CORS blocked origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204
+};
+
 app.use(helmet());
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || configuredOrigins.includes(origin) || isAllowedDevOrigin(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error(`CORS blocked origin: ${origin}`));
-    },
-    credentials: true
-  })
-);
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));

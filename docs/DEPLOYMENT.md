@@ -4,11 +4,14 @@
 
 Use the root `vercel.json`.
 
-Set this environment variable in Vercel:
+Set this environment variable in Vercel/Render frontend:
 
 ```env
-VITE_API_URL=https://your-render-api.onrender.com/api
+VITE_API_URL=https://ai-based-phishing-detection-website.onrender.com
 ```
+
+The frontend now normalizes the API base URL and appends `/api` automatically when needed.  
+`VITE_API_URL` values with or without `/api` are both supported, but after changing it you must trigger a new frontend build/redeploy for Vite to pick up the new value.
 
 Build command:
 
@@ -31,7 +34,7 @@ Required backend environment variables:
 ```env
 MONGO_URI=mongodb+srv://<user>:<password>@<cluster>/<database>
 JWT_SECRET=<long-random-secret>
-CLIENT_URL=https://your-vercel-app.vercel.app
+CLIENT_URL=https://phishgaurd-frontend.onrender.com
 AI_SERVICE_URL=https://your-ai-service.onrender.com
 VIRUSTOTAL_API_KEY=
 SMTP_HOST=
@@ -39,6 +42,9 @@ SMTP_PORT=587
 SMTP_USER=
 SMTP_PASS=
 ```
+
+`CLIENT_URL` supports a comma-separated allowlist when multiple frontend origins must be allowed.
+After updating backend environment variables in Render, restart/redeploy the backend service.
 
 The AI service trains the sample model during build. Replace `ai-service/data/sample_phishing_urls.csv` with a larger labelled dataset before production.
 
@@ -56,4 +62,3 @@ Services:
 - Backend API: `http://localhost:5000/api`
 - AI service: `http://localhost:8000`
 - MongoDB: `mongodb://localhost:27017/phishguard`
-
